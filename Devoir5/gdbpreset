@@ -1,13 +1,14 @@
 file tp5
 
 undisplay
-#display $x2
+display $x9
+display $x10
 #display VariableName
 
 delete
-break tp5.as:43
-break tp5.as:49
-#break fct name
+#break tp5.as:43
+break CompileRec
+break CompileRec_OP
 
 layout src
 

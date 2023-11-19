@@ -27,38 +27,41 @@ Compile:
 	mov		x22, x19			// current node address
 
 CompileRec:
-	ldr		x9, [x22]			// load node type
-	cmp		x9, #0
-	b.eq	CompileRec_PUSH		// if type == 0 PUSH
-
-CompileRec_PUSH:
-	ldr		x10, [x22, #4]	 	// load node value
-	str		x10, [x20], #3		// save value in return array, address + 3 bytes
-	add		x21, x21, #3		// Add 
-
-	adr		x0, pfnode			// test print result
+	adr		x0, pfnode			// test print results
 	mov		x1, x22
-	mov		x2, x9
-	mov		x3, x10
+	ldr		x2, [x22]
+	ldr		x3, [x22, #4]
 	ldr		x4,	[x22, #8]
 	ldr		x5, [x22, #16]
 	bl		printf
 
+	ldrh	w9, [x22]		// load node type
+	cmp		x9, #0
+	b.eq	CompileRec_PUSH		// if type == 0 PUSH
+	//b.al	CompileEnd
+
 CompileRec_OP:
-	ldr		x22, [x22, #8]
+	mov		x12, x22
+	ldrh	w10, [x12, #4]	 	// load node value
+	mov		x11, x10
+
+	ldr		x22, [x12, #8]
 	bl		CompileRec
 
-	ldr		x22, [x22, #16]
+	ldr		x22, [x12, #16]
 	bl		CompileRec
-
 	add		x21, x21, #1
 
+	b.al	CompileEnd
 
-
-
+CompileRec_PUSH:
+	ldr		x13, [x22, #4]	 	// load node value
+	str		x13, [x20], #3		// save value in return array, address + 3 bytes
+	add		x21, x21, #3		// Add 
+	ret
 
 CompileEnd:
-	mov		x0, x21
+	mov		x0, #0
 	mov		x1, x20
 
 	RESTORE

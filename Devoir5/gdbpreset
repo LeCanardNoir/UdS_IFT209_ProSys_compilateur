@@ -1,0 +1,14 @@
+file tp5
+
+undisplay
+#display $x2
+#display VariableName
+
+delete
+break tp5.as:43
+break tp5.as:49
+#break fct name
+
+layout src
+
+run < ./tests/input1

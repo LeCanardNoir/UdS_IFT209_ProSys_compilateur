@@ -6,9 +6,11 @@ display $x10
 #display VariableName
 
 delete
-#break tp5.as:43
+#break tp5.as:48
+#break tp5.as:51
 break CompileRec
 break CompileRec_OP
+break CompileRec_PUSH
 
 layout src
 

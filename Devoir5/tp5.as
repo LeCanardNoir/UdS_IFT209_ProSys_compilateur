@@ -25,12 +25,16 @@ Compile:
 	mov		x20, x1				// Get return array address
 	mov		x21, #0				// instruction size
 	mov		x22, x19			// current node address
+	mov		x23, #8				// stack jump
+	mov		x24, #0				// stack steps
 
 CompileRec:
 
 	ldrh	w9, [x22]			// load node type
 	cmp		x9, #0
 	b.eq	CompileRec_PUSH		// if type == 0 PUSH
+	cmp		x9, #1
+	b.eq	CompileRec_StackOps
 
 	mov		x12, x22			// get current node address
 	ldrh	w10, [x12, #4]	 	// load node value
@@ -55,6 +59,11 @@ CompileRec_PUSH:
 	ldr		x13, [x22, #4]	 	// load node value
 	str		x13, [x20], #3		// save value in return array, address + 3 bytes
 	add		x21, x21, #3		// Add 
+	ret
+
+CompileRec_StackOps:
+	mul		x9, x23, x24
+	str		x12, [sp, x9]
 	ret
 
 CompileEnd:

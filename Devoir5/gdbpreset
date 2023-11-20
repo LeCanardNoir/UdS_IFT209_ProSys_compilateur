@@ -1,0 +1,15 @@
+file tp5
+
+undisplay
+display $x9
+display $x19
+display $x21
+#display Compile_loop
+
+delete
+break tp5.as:40
+break Compile_loop
+
+layout src
+
+run < ./tests/input1

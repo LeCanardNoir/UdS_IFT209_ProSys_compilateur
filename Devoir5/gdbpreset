@@ -1,8 +1,12 @@
 file tp5
 
 undisplay
-#display $x9
-#display $x10
+display $x10
+display $x19
+display $x20
+display $x21
+display $x22
+display $x23
 #display VariableName
 
 delete
@@ -10,10 +14,10 @@ delete
 #break tp5.as:51
 break Compile
 break Compile_REC
-break Compile_REC_PUSH
-break Compile_REC_LEFT
-break Compile_REC_RIGHT
-break Compile_END
+break Compile_PUSH
+break Compile_LEFT
+break Compile_RIGHT
+#break Compile_END
 
 layout src
 

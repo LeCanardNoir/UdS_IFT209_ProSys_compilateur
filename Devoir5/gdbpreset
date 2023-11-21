@@ -1,0 +1,20 @@
+file tp5
+
+undisplay
+#display $x9
+#display $x10
+#display VariableName
+
+delete
+#break tp5.as:48
+#break tp5.as:51
+break Compile
+break Compile_REC
+break Compile_REC_PUSH
+break Compile_REC_LEFT
+break Compile_REC_RIGHT
+break Compile_END
+
+layout src
+
+run < ./tests/input1

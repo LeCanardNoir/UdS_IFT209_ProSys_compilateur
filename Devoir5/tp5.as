@@ -48,9 +48,10 @@ Compile:
 Compile_REC:
 	SAVE
 	ldrb	w20, [x19]				// load current type
-	ldrb	w21, [x19, #4]			// load current value
+	ldr		x21, [x19, #4]			// load current value
 	ldr		x22, [x19, #8]			// load left child node address
 	ldr		x23, [x19, #16]			// load right child node address
+	ldrb	w25, [x19, #4]		
 
 	// PUSH
 	cmp		x20, #0
@@ -59,15 +60,15 @@ Compile_REC:
 	str		x24, [x9, x2]//, #1
 	add		x2, x2, #1
 	
-	mov		w15, w21
-	lsl		w15, w15, #16
-	lsr		w15, w15, #24
-	strb	w15, [x9, x2]//, #1			// save value in array
+	mov		x15, x21
+	lsl		x15, x15, #48
+	lsr		x15, x15, #56
+	str		x15, [x9, x2]//, #1			// save value in array
 	add		x2, x2, #1
 	
-	lsl		w21, w21, #24
-	lsr		w21, w21, #24
-	strb	w21, [x9, x2]//, #1
+	//lsl		x21, x21, #56
+	//lsr		x21, x21, #56
+	str		x21, [x9, x2]//, #1
 	add		x2, x2, #1
 	
 	add		x10, x10, #3			// add size
@@ -85,29 +86,30 @@ Compile_RIGHT:
 	mov		x19, x23
 	bl		Compile_REC
 	
-	cmp		x21, #0	
+	mov		w21, w25
+	cmp		w21, #0	
 	b.eq	Compile_ADD
-	cmp		x21, #1	
+	cmp		w21, #1	
 	b.eq	Compile_SUB
-	cmp		x21, #2
+	cmp		w21, #2
 	b.eq	Compile_MUL
-	cmp		x21, #3
+	cmp		w21, #3
 	b.eq	Compile_DIV
 
 Compile_ADD: // 0x48
-	mov		x21, 0x48
+	mov		w21, 0x48
 	b.al	Compile_OP
 
 Compile_SUB:// 0x4c
-	mov		x21, 0x4c
+	mov		w21, 0x4c
 	b.al	Compile_OP
 	
 Compile_MUL:// 0x50
-	mov		x21, 0x50
+	mov		w21, 0x50
 	b.al	Compile_OP
 	
 Compile_DIV:// 0x54
-	mov		x21, 0x54
+	mov		w21, 0x54
 
 Compile_OP:
 	strb	w21, [x9, x2]//, #1			// save op value in array

@@ -14,8 +14,8 @@ display $w21
 
 delete
 #break tp5.as:48
-break tp5.as:62
-break tp5.as:71
+break tp5.as:88
+
 # break Compile
 # break Compile_REC
 # break Compile_PUSH

@@ -48,15 +48,22 @@ Compile_REC:
 	ldrb	w21, [x19, #4]			// load current value
 	ldr		x22, [x19, #8]			// load left child node address
 	ldr		x23, [x19, #16]			// load right child node address
-	mov		x25, x19
 
 	// PUSH
 	cmp		x20, #0
 	b.ne	Compile_LEFT			// if type != 0
 	mov		x24, 0x40
 	str		x24, [x9], #1
-	str		xzr, [x9], #1
-	str		x21, [x9], #1			// save value in array
+	
+	mov		w15, w21
+	lsl		w15, w15, #16
+	lsr		w15, w15, #24
+	strb	w15, [x9], #1			// save value in array
+	
+	lsl		w21, w21, #24
+	lsr		w21, w21, #24
+	strb	w21, [x9], #1
+	
 	add		x10, x10, #3			// add size
 	b.al	Compile_REC_END
 
@@ -71,10 +78,33 @@ Compile_RIGHT:
 	b.eq	Compile_REC_END				// if right addr != 0
 	mov		x19, x23
 	bl		Compile_REC
+	
+	cmp		x21, #0	
+	b.eq	Compile_ADD
+	cmp		x21, #1	
+	b.eq	Compile_SUB
+	cmp		x21, #2
+	b.eq	Compile_MUL
+	cmp		x21, #3
+	b.eq	Compile_DIV
 
-	ldr		x21, [x25, #4]
-	add		x21, x21, 0x30
-	str		x21, [x9], #1			// save op value in array
+Compile_ADD: // 0x48
+	mov		x21, 0x48
+	b.al	Compile_OP
+
+Compile_SUB:// 0x4c
+	mov		x21, 0x4c
+	b.al	Compile_OP
+	
+Compile_MUL:// 0x50
+	mov		x21, 0x50
+	b.al	Compile_OP
+	
+Compile_DIV:// 0x54
+	mov		x21, 0x54
+
+Compile_OP:
+	strb	w21, [x9], #1			// save op value in array
 	add		x10, x10, #1			// add size
 
 Compile_REC_END:

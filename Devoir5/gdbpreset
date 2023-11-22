@@ -7,6 +7,7 @@ display $x20
 display $x21
 display $x22
 display $x23
+display $x25
 #display VariableName
 
 delete

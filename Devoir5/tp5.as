@@ -23,15 +23,18 @@ Compile:
 	mov		x19, x0					// load root address
 	mov		x9, x1					// load array address
 	mov		x10, #0					// size counter
+	mov		x2, #0					// array index
 	bl		Compile_REC
 
 
 	mov		x11, 0x21
-	str		x11, [x9], #1
+	str		x11, [x9, x2]//, #1
+	add		x2, x2, #1
 	mov		x11, #0
-	str		x11, [x9], #1
+	str		x11, [x9, x2]//, #1
+	add		x2, x2, #1
 	mov		x11, #0
-	str		x11, [x9]
+	str		x11, [x9, x2]
 
 	add		x10, x10, #2
 	mov		x0, x10
@@ -53,16 +56,19 @@ Compile_REC:
 	cmp		x20, #0
 	b.ne	Compile_LEFT			// if type != 0
 	mov		x24, 0x40
-	str		x24, [x9], #1
+	str		x24, [x9, x2]//, #1
+	add		x2, x2, #1
 	
 	mov		w15, w21
 	lsl		w15, w15, #16
 	lsr		w15, w15, #24
-	strb	w15, [x9], #1			// save value in array
+	strb	w15, [x9, x2]//, #1			// save value in array
+	add		x2, x2, #1
 	
 	lsl		w21, w21, #24
 	lsr		w21, w21, #24
-	strb	w21, [x9], #1
+	strb	w21, [x9, x2]//, #1
+	add		x2, x2, #1
 	
 	add		x10, x10, #3			// add size
 	b.al	Compile_REC_END
@@ -104,7 +110,8 @@ Compile_DIV:// 0x54
 	mov		x21, 0x54
 
 Compile_OP:
-	strb	w21, [x9], #1			// save op value in array
+	strb	w21, [x9, x2]//, #1			// save op value in array
+	add		x2, x2, #1
 	add		x10, x10, #1			// add size
 
 Compile_REC_END:

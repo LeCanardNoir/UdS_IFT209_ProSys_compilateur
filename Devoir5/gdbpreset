@@ -1,25 +1,28 @@
 file tp5
 
 undisplay
-display $x10
-display $x19
-display $x20
-display $x21
-display $x22
-display $x23
-display $x25
+display $w15
+display $w21
+# display $x10
+# display $x19
+# display $x20
+# display $x21
+# display $x22
+# display $x23
+# display $x25
 #display VariableName
 
 delete
 #break tp5.as:48
-#break tp5.as:51
-break Compile
-break Compile_REC
-break Compile_PUSH
-break Compile_LEFT
-break Compile_RIGHT
+break tp5.as:62
+break tp5.as:71
+# break Compile
+# break Compile_REC
+# break Compile_PUSH
+# break Compile_LEFT
+# break Compile_RIGHT
 #break Compile_END
 
 layout src
 
-run < ./tests/input1
+run < ./tests/input3

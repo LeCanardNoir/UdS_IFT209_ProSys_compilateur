@@ -24,25 +24,22 @@ Compile:
 	mov		x9, x1					// load array address
 	mov		x10, #0					// size counter
 	mov		x2, #0					// array index
-	bl		Compile_REC
+	bl		Compile_REC				// Start record loop
 
 
-	mov		x11, 0x21
-	str		x11, [x9, x2]//, #1
-	add		x2, x2, #1
-	mov		x11, #0
-	str		x11, [x9, x2]//, #1
-	add		x2, x2, #1
-	mov		x11, #0
-	str		x11, [x9, x2]
+	mov		x11, 0x21				// WRITE code
+	str		x11, [x9, x2]			// Put WRITE code in array
+	add		x2, x2, #1				// array ++
+	mov		x11, 0x00				// HALT code
+	str		x11, [x9, x2]			// Put HALT code in array
 
-	add		x10, x10, #2
-	mov		x0, x10
-	mov		x1, x9
+	add		x10, x10, #2			// size ++
+	mov		x0, x10					// param size 
+	mov		x1, x9					// param array address
 	
 
 	RESTORE
-	ret
+	ret								// EXIT
 
 
 Compile_REC:
@@ -51,14 +48,14 @@ Compile_REC:
 	ldr		x21, [x19, #4]			// load current value
 	ldr		x22, [x19, #8]			// load left child node address
 	ldr		x23, [x19, #16]			// load right child node address
-	ldrb	w25, [x19, #4]		
+	ldrb	w25, [x19, #4]			// backup current node type address
 
 	// PUSH
 	cmp		x20, #0
-	b.ne	Compile_LEFT			// if type != 0
-	mov		x24, 0x40
-	str		x24, [x9, x2]//, #1
-	add		x2, x2, #1
+	b.ne	Compile_LEFT			// if type != 0 go LEFT
+	mov		x24, 0x40				// digit code
+	str		x24, [x9, x2]			// save digit code in array
+	add		x2, x2, #1				// array index ++
 	
 	mov		x15, x21
 	lsl		x15, x15, #48

@@ -1,8 +1,8 @@
 file tp5
 
 undisplay
-display $w15
-display $w21
+display /t $x15
+display /t $x21
 # display $x10
 # display $x19
 # display $x20
@@ -14,7 +14,7 @@ display $w21
 
 delete
 #break tp5.as:48
-break tp5.as:88
+break tp5.as:60
 
 # break Compile
 # break Compile_REC

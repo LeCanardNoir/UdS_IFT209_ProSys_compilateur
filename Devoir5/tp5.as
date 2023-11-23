@@ -33,13 +33,13 @@ Compile:
 	mov		x11, 0x00				// HALT code
 	str		x11, [x9, x2]			// Put HALT code in array
 
-	add		x10, x10, #2			// size ++
+	add		x10, x10, #2			// add size +2
 	mov		x0, x10					// param size 
 	mov		x1, x9					// param array address
 	
 
 	RESTORE
-	ret								// EXIT
+	ret								// EXIT sub-program
 
 
 Compile_REC:
@@ -48,71 +48,48 @@ Compile_REC:
 	ldr		x21, [x19, #4]			// load current value
 	ldr		x22, [x19, #8]			// load left child node address
 	ldr		x23, [x19, #16]			// load right child node address
-	ldrb	w25, [x19, #4]			// backup current node type address
+	ldrb	w25, [x19, #4]			// backup current node value
 
 	// PUSH
 	cmp		x20, #0
-	b.ne	Compile_LEFT			// if type != 0 go LEFT
+	b.ne	Compile_LEFT			// if type != 0 -> go LEFT
 	mov		x24, 0x40				// digit code
 	str		x24, [x9, x2]			// save digit code in array
 	add		x2, x2, #1				// array index ++
 	
-	mov		x15, x21
-	lsl		x15, x15, #48
-	lsr		x15, x15, #56
-	str		x15, [x9, x2]//, #1			// save value in array
-	add		x2, x2, #1
+	lsr		x15, x21, #8			// keep last byte
+	str		x15, [x9, x2]			// save last byte value in array
+	add		x2, x2, #1				// array index ++
+
+	bic		x21, x21, 0xFFFFFF00	// keep first byte
+	str		x21, [x9, x2]			// save first byte value in array
+	add		x2, x2, #1				// array index ++
 	
-	//lsl		x21, x21, #56
-	//lsr		x21, x21, #56
-	str		x21, [x9, x2]//, #1
-	add		x2, x2, #1
-	
-	add		x10, x10, #3			// add size
-	b.al	Compile_REC_END
+	add		x10, x10, #3			// add size +3
+	b.al	Compile_REC_END			// no child get parent
 
 Compile_LEFT:
 	cmp		x22, #0
-	b.eq	Compile_RIGHT			// if left addr != 0
-	mov		x19, x22
-	bl		Compile_REC
+	b.eq	Compile_RIGHT			// if left address == 0 -> Goto right
+	mov		x19, x22				// else param left node address
+	bl		Compile_REC				// get left record
 
 Compile_RIGHT:
-	cmp		x23, #0
-	b.eq	Compile_REC_END				// if right addr != 0
-	mov		x19, x23
-	bl		Compile_REC
+	cmp		x23, #0					// 
+	b.eq	Compile_REC_END			// if right address == 0 -> no child get parent
+	mov		x19, x23				// else param right node address
+	bl		Compile_REC				// get right record
 	
-	mov		w21, w25
-	cmp		w21, #0	
-	b.eq	Compile_ADD
-	cmp		w21, #1	
-	b.eq	Compile_SUB
-	cmp		w21, #2
-	b.eq	Compile_MUL
-	cmp		w21, #3
-	b.eq	Compile_DIV
-
-Compile_ADD: // 0x48
-	mov		w21, 0x48
-	b.al	Compile_OP
-
-Compile_SUB:// 0x4c
-	mov		w21, 0x4c
-	b.al	Compile_OP
-	
-Compile_MUL:// 0x50
-	mov		w21, 0x50
-	b.al	Compile_OP
-	
-Compile_DIV:// 0x54
-	mov		w21, 0x54
+	mov		w21, w25				// get current node value
+	mov		x25, #4					// operator num factor
+	mul		x21, x21, x25			// multiply operator num by factor
+	add		x21, x21, 0x48			// Add 0x48 to operator
 
 Compile_OP:
-	strb	w21, [x9, x2]//, #1			// save op value in array
-	add		x2, x2, #1
-	add		x10, x10, #1			// add size
+	strb	w21, [x9, x2]			// save op value in array
+	add		x2, x2, #1				// array index ++
+	add		x10, x10, #1			// add size +1
 
 Compile_REC_END:
 	RESTORE
-	ret
+	ret								// end record

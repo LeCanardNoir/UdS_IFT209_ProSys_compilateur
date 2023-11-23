@@ -1,0 +1,28 @@
+file tp5
+
+undisplay
+display /t $x15
+display /t $x21
+# display $x10
+# display $x19
+# display $x20
+# display $x21
+# display $x22
+# display $x23
+# display $x25
+#display VariableName
+
+delete
+#break tp5.as:48
+break tp5.as:60
+
+# break Compile
+# break Compile_REC
+# break Compile_PUSH
+# break Compile_LEFT
+# break Compile_RIGHT
+#break Compile_END
+
+layout src
+
+run < ./tests/input3
